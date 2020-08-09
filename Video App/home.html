@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>Video Call</title>
+        <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/product/">
+        <link rel="icon" href="favicon.ico">
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" 
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">    
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <style>
+          .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+          }
+          @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+              font-size: 3.5rem;
+            }
+          }
+        </style>
+        <!-- Custom styles for this template -->
+        <link rel="stylesheet" type="text/css" href="main1.css">
+        <link href="product.css" rel="stylesheet">
+        <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
+        <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+    </head>
+
+    <body>
+        <nav class="site-header sticky-top py-1">
+            <div class="container d-flex flex-column flex-md-row justify-content-between">
+                <a class="py-2" href="index.html" aria-label="Product">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mx-auto" role="img" viewBox="0 0 24 24" focusable="false">
+                    <title>Product</title><circle cx="12" cy="12" r="10"/>
+                    <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/>
+                </svg>
+                </a>
+                
+                <a class="py-2 d-none d-md-inline-block" href="#">Product</a>
+                <a class="py-2 d-none d-md-inline-block" href="#">Features</a>
+                <a class="py-2 d-none d-md-inline-block" href="#">Pricing</a>
+            </div>
+        </nav>
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+            <!-- <h1>Welcome to Video Conferencing App!</h1> -->
+            <div id="buttons">
+                <button class="mdc-button mdc-button--raised" id="cameraBtn">
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">perm_camera_mic</i>
+                    <span class="mdc-button__label">Open camera & microphone</span>
+                </button>
+                <button class="mdc-button mdc-button--raised" disabled id="createBtn">
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">group_add</i>
+                    <span class="mdc-button__label">Create room</span>
+                </button>
+                <button class="mdc-button mdc-button--raised" disabled id="joinBtn">
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">group</i>
+                    <span class="mdc-button__label">Join room</span>
+                </button>
+                <button class="mdc-button mdc-button--raised" disabled id="hangupBtn">
+                    <i class="material-icons mdc-button__icon" aria-hidden="true">close</i>
+                    <span class="mdc-button__label">Hangup</span>
+                </button>
+                
+                <a href="https://chat-1d308.web.app/" target="_blank">
+                    <button class="mdc-button mdc-button--raised">
+                        <img src="https://image.flaticon.com/icons/svg/900/900779.svg" height="20rem" class="pr-2" alt="" srcset="">
+                        <span class="mdc-button__label">Chat</span>
+                    </button>
+                </a>
+                    
+                
+            </div>
+            <div>
+                <span id="currentRoom"></span>
+            </div>
+            <div>
+                <div id="videos">
+                    <video id="localVideo" muted autoplay playsinline></video>
+                </div>
+                <div id='videosR'>
+                    <video id="remoteVideo" autoplay playsinline></video>
+                </div>
+            </div>
+           
+            <div class="mdc-dialog"
+                id="room-dialog"
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby="my-dialog-title"
+                aria-describedby="my-dialog-content">
+                <div class="mdc-dialog__container">
+                    <div class="mdc-dialog__surface">
+                        <h2 class="mdc-dialog__title" id="my-dialog-title">Join room</h2>
+                        <div class="mdc-dialog__content" id="my-dialog-content">
+                            Enter ID for room to join:
+                            <div class="mdc-text-field">
+                                <input type="text" id="room-id" class="mdc-text-field__input">
+                                <label class="mdc-floating-label" for="my-text-field">Room ID</label>
+                                <div class="mdc-line-ripple"></div>
+                            </div>
+                        </div>
+                        <footer class="mdc-dialog__actions">
+                            <button type="button" class="mdc-button mdc-dialog__button" data-mdc-dialog-action="no">
+                                <span class="mdc-button__label">Cancel</span>
+                            </button>
+                            <button id="confirmJoinBtn" type="button" class="mdc-button mdc-dialog__button"
+                                    data-mdc-dialog-action="yes">
+                                <span class="mdc-button__label">Join</span>
+                            </button>
+                        </footer>
+                    </div>
+                </div>
+                <div class="mdc-dialog__scrim"></div>
+            </div>
+        </div>
+
+        <footer class="container py-5">
+            <div class="row">
+              <div class="col-12 col-md">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="d-block mb-2" role="img" viewBox="0 0 24 24" focusable="false"><title>Product</title><circle cx="12" cy="12" r="10"/><path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"/></svg>
+                <small class="d-block mb-3 text-muted">&copy; 2020</small>
+              </div>
+              <div class="col-6 col-md">
+                <h5>Features</h5>
+                </ul>
+              </div>
+              <div class="col-6 col-md">
+                <h5>Resources</h5>
+              </div>
+              <div class="col-6 col-md">
+                <h5>About</h5>
+              </div>
+            </div>
+        </footer>
+      
+        <script src="/__/firebase/7.17.1/firebase-app.js"></script>
+        <script src="/__/firebase/7.17.1/firebase-analytics.js"></script>
+        <script src="/__/firebase/7.17.1/firebase-auth.js"></script>
+        <script src="/__/firebase/7.17.1/firebase-firestore.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script>window.jQuery || document.write('<script src="../assets/js/vendor/jquery.slim.min.js"><\/script>')</script>
+        <script src="../assets/dist/js/bootstrap.bundle.js"></script>
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+        <script defer src="/__/firebase/7.13.1/firebase-app.js"></script>
+        <script defer src="/__/firebase/7.13.1/firebase-firestore.js"></script>
+        <script defer src="/__/firebase/init.js"></script>
+        <!-- Custom JavaScript -->
+        <script src="app.js"></script>
+        <script src="/__/firebase/7.17.1/firebase-app.js"></script>
+        <script src="/__/firebase/7.17.1/firebase-analytics.js"></script>
+        <!-- Initialize Firebase -->
+        <script src="/__/firebase/init.js"></script>
+        
+    </body>
+</html>
