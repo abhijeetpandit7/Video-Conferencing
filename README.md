@@ -1,5 +1,5 @@
 # Video-Conferencing-Web-Application
-Developed a WebRTC enabled video conferencing and web chat application.
+Developed a WebRTC enabled video conferencing and web chat application.                                          
 Optimized application for low-bandwith scenarios.
 
 ## Features:
